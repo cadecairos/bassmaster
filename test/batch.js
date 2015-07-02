@@ -434,6 +434,18 @@ describe('Batch', function () {
         });
     });
 
+    it('supports piping a nested response value from post into the next get request', function (done) {
+
+        makeRequest('{ "requests": [ {"method": "post", "path": "/echo", "payload": { "data": {"id":"44cf687663"}}}, {"method": "get", "path": "/item/$0.data.id"}] }', function (res) {
+
+            expect(res.length).to.equal(2);
+            expect(res[0].data.id).to.equal('44cf687663');
+            expect(res[1].id).to.equal('44cf687663');
+            expect(res[1].name).to.equal('Item');
+            done();
+        });
+    });
+
     it('handles null payloads gracefully', function (done) {
 
         makeRequest('{ "requests": [ {"method": "post", "path": "/echo", "payload":{"a":1}}, {"method": "post", "path": "/echo", "payload":null}] }', function (res) {
@@ -496,6 +508,15 @@ describe('Batch', function () {
     it('a non-existant reference returns an internal error', function (done) {
 
         makeRequest('{ "requests": [{"method": "get", "path": "/item"}, {"method": "get", "path": "/item/$0.nothere"}] }', function (res) {
+
+            expect(res.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+    it('a non-existant & nested reference returns an internal error', function (done) {
+
+        makeRequest('{ "requests": [ {"method": "post", "path": "/echo", "payload": { "data": {"id":"44cf687663"}}}, {"method": "get", "path": "/item/$0.data.nothere"}] }', function (res) {
 
             expect(res.statusCode).to.equal(500);
             done();
