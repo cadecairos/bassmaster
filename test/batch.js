@@ -465,7 +465,7 @@ describe('Batch', function () {
 
             expect(res.length).to.equal(2);
             expect(res[0]).to.deep.equal({ a: 1 });
-            expect(res[1]).to.deep.equal({});
+            expect(res[1]).to.be.null();
             done();
         });
     });
@@ -608,7 +608,7 @@ describe('Batch', function () {
         makeRequest('{ "requests": [ {"method": "post", "path": "/echo", "query": null}] }', function (res) {
 
             expect(res.length).to.equal(1);
-            expect(res[0]).to.deep.equal({});
+            expect(res[0]).to.be.null();
             done();
         });
     });
@@ -657,7 +657,7 @@ describe('Batch', function () {
             expect(res.length).to.equal(2);
             expect(res[0].id).to.equal('55cf687663');
             expect(res[0].name).to.equal('Active Item');
-            expect(res[1]).to.be.empty();
+            expect(res[1]).to.be.null();
             done();
         });
     });
@@ -682,20 +682,6 @@ describe('Batch', function () {
             expect(res[0].id).to.equal('55cf687663');
             expect(res[0].name).to.equal('Active Item');
             expect(res[1].foo).to.be.undefined();
-
-            done();
-        });
-    });
-
-    it('works with multiple connections', function (done) {
-
-        // Add a connection to the server
-        server.connection({ port: 8000, host: 'localhost', labels: ['test'] });
-
-        makeRequest('{ "requests": [ {"method": "post", "path": "/echo", "query": null}] }', function (res) {
-
-            expect(res.length).to.equal(1);
-            expect(res[0]).to.deep.equal({});
 
             done();
         });
